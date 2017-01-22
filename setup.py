@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+import os
+import io
 from distutils.core import setup, Extension
 import numpy as np
 
@@ -17,9 +19,20 @@ else:
 cmdclass = { }
 ext_modules = [ ]
 
+here = os.path.abspath(os.path.dirname(__file__))
+
+def read(*filenames, **kwargs):
+    encoding = kwargs.get('encoding', 'utf-8')
+    sep = kwargs.get('sep', '\n')
+    buf = []
+    for filename in filenames:
+        with io.open(filename, encoding=encoding) as f:
+            buf.append(f.read())
+    return sep.join(buf)
+
 if use_cython:
     ext_modules += [
-        Extension("sparse_linear_binning.sparse_linear_binning",
+        Extension("sparse_linear_binning",
                   sources=["sparse_linear_binning/sparse_linear_binning.pyx",
                     "sparse_linear_binning/sparse_linear_binning_impl.cpp"],
                   language='c++'
@@ -28,7 +41,7 @@ if use_cython:
     cmdclass.update({'build_ext': build_ext})
 else:
     ext_modules += [
-        Extension("sparse_linear_binning.sparse_linear_binning",
+        Extension("sparse_linear_binning",
                   sources=['sparse_linear_binning/sparse_linear_binning.cpp',
                     "sparse_linear_binning/sparse_linear_binning_impl.cpp"],
                   language='c++'
@@ -49,6 +62,7 @@ setup(
     long_description=long_description,
     # install_requires=['numpy>=10.0.0'],
     # tests_require=['pytest'],
+    # test_suite='sparse_linear_binning.test.test_sparse_linear_binning',
     cmdclass=cmdclass,
     ext_modules=ext_modules,
     # ext_modules=cythonize('sparse_linear_binning/sparse_linear_binning.pyx')

@@ -1,5 +1,5 @@
 
-# sparse_linear_binning: performs a linear binning (optimized for sparsity)
+# sparse_linear_binning: linear binning (optimized for sparsity)
 
 Performs a linear binning technique described in [Wand and Jones](https://www.crcpress.com/Kernel-Smoothing/Wand-Jones/p/book/9780412552700).
 The
@@ -8,7 +8,7 @@ of this binning technique performs better than so-called
 simple binning (i.e. as in histograms).
 
 For example, within a 2D grid with corners A, B, C, and D and a 2D point P with
-weight wP:
+weight w<sub>P</sub>:
 
     A-----------------------------------B
     |        |                          |
@@ -18,15 +18,15 @@ weight wP:
     |        |                          |
     D-----------------------------------C
 
-* Assign a weight to corner A of the proportion of area (times wP) between P and C
-* Assign a weight to corner B of the proportion of area (times wP) between P and D
-* Assign a weight to corner C of the proportion of area (times wP) between P and A
-* Assign a weight to corner D of the proportion of area (times wP) between P and B
+* Assign a weight to corner A of the proportion of area between P and C (times w<sub>P</sub>)
+* Assign a weight to corner B of the proportion of area between P and D (times w<sub>P</sub>)
+* Assign a weight to corner C of the proportion of area between P and A (times w<sub>P</sub>)
+* Assign a weight to corner D of the proportion of area between P and B (times w<sub>P</sub>)
 
 Note that the under- and overflow bins need to be accounted for when specifying
 the number of bins.
 For instance, if you want grid points in steps of 0.1 in a range of \[0,1\]
-(i.e. (0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1), specify the number of bins to be 11.
+(i.e. (0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1)), specify the number of bins to be 11.
 Internally, the grid points are stored in a high performance, C++-based hash
 table ([sparsepp](https://github.com/greg7mdp/sparsepp)).
 This allows for finer binning because it never allocates memory for grid points
@@ -39,6 +39,8 @@ of bins in such a way that the product of bin sizes is less than the numeric
 maximum of "unsigned long" or "unsigned long long" on your system.
 
 ## Quickstart
+
+## Example
 
 ## Dependencies
 
