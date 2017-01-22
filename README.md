@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jhetherly/sparse_linear_binning.svg?branch=master)](https://travis-ci.org/jhetherly/sparse_linear_binning)
 
 # sparse_linear_binning: linear binning (optimized for sparsity)
 
@@ -40,7 +41,32 @@ maximum of "unsigned long" or "unsigned long long" on your system.
 
 ## Quickstart
 
+pip install sparse_linear_binning
+
 ## Example
+
+```python
+from sparse_linear_binning import sparse_linear_binning
+import numpy as np
+
+# generate one million random 2D points and weights
+# (should take less than a second to bin)
+n_samples=1000000
+D=2
+
+# coordinates, weights, and extents must be of type "double"
+sample_coords = np.random.random(size=(n_samples, D))
+sample_weights = np.random.random(size=n_samples)
+extents = np.tile([0., 1.], D).reshape((D, 2))
+# sizes must be of type "unsigned long"
+sizes = np.full(D, 51, dtype=np.dtype('uint64'))
+
+coords, weights = sparse_linear_binning(sample_coords, sample_weights,
+                                        extents, sizes)
+
+# check that weights on grid match original weights
+print(np.allclose(weights.sum(), sample_weights.sum()))
+```
 
 ## Dependencies
 
