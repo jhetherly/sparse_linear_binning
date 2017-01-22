@@ -36,7 +36,8 @@ template<class GT>
 struct finite_global_indices_D_arb {
   typedef ArbNum_t Corner_t;
   static inline unsigned long convert_corner_to_ul (const Corner_t &num)
-  {return num.template convert_to<unsigned long>();}
+  {return num.convert_to<unsigned long>();}
+  // {return num.template convert_to<unsigned long>();}
   typedef GT GIndex_t;
   typedef sparse_hash_map<GIndex_t, double> Map_t;
   static inline unsigned long convert_to_ul (const GIndex_t &num)
@@ -62,7 +63,8 @@ struct arbitrary_precision_global_indices_D_fin {
   typedef ArbNum_t GIndex_t;
   typedef sparse_hash_map<GIndex_t, double, cpp_int_stupid_hasher> Map_t;
   static inline unsigned long convert_to_ul (const GIndex_t &num)
-  {return num.template convert_to<unsigned long>();}
+  {return num.convert_to<unsigned long>();}
+  // {return num.template convert_to<unsigned long>();}
 };
 
 struct arbitrary_precision_global_indices_D_arb {
@@ -79,11 +81,13 @@ struct arbitrary_precision_global_indices_D_arb {
 
   typedef ArbNum_t Corner_t;
   static inline unsigned long convert_corner_to_ul (const Corner_t &num)
-  {return num.template convert_to<unsigned long>();}
+  {return num.convert_to<unsigned long>();}
+  // {return num.template convert_to<unsigned long>();}
   typedef ArbNum_t GIndex_t;
   typedef sparse_hash_map<GIndex_t, double, cpp_int_stupid_hasher> Map_t;
   static inline unsigned long convert_to_ul (const GIndex_t &num)
-  {return num.template convert_to<unsigned long>();}
+  {return num.convert_to<unsigned long>();}
+  // {return num.template convert_to<unsigned long>();}
 };
 
 
