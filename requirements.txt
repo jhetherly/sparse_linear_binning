@@ -1,2 +1,1 @@
-sparse_linear_binning
 numpy>=10.0.0
