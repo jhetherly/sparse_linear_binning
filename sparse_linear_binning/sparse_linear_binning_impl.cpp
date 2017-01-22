@@ -102,8 +102,6 @@ void sparse_linear_binning_impl (const unsigned long D, // space dimension
 }
 
 
-
-
 // using namespace std;
 //
 // int main(int /*argc*/, char * /*argv*/[])
