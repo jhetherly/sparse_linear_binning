@@ -9,6 +9,7 @@ simple binning (i.e. as in histograms).
 
 For example, within a 2D grid with corners A, B, C, and D and a 2D point P with
 weight wP:
+``
 A-----------------------------------B
 |        |                          |
 |                                   |
@@ -16,6 +17,7 @@ A-----------------------------------B
 |- - - - P- - - - - - - - - - - - - |
 |        |                          |
 D-----------------------------------C
+``
 
 * Assign a weight to corner A of the proportion of area (times wP) between P and C
 * Assign a weight to corner B of the proportion of area (times wP) between P and D
