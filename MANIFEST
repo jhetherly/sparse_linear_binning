@@ -1433,3 +1433,7 @@ sparse_linear_binning/sparsepp/bench.md
 sparse_linear_binning/sparsepp/sparsepp.h
 sparse_linear_binning/sparsepp/spp_test.cc
 sparse_linear_binning/sparsepp/spp_utils.h
+sparse_linear_binning/test/__init__.py
+sparse_linear_binning/test/__init__.pyc
+sparse_linear_binning/test/test_sparse_linear_binning.py
+sparse_linear_binning/test/__pycache__/test_sparse_linear_binning.cpython-27-PYTEST.pyc

@@ -1,3 +1,9 @@
+# NOTE: before upload
+# update version number here and GitHub
+# pandoc --from=markdown --to=rst --output=README.rst README.md
+# python setup.py register -r pypi
+# python setup.py sdist upload -r pypi
+
 include setup.cfg
 include setup.py
 include README.rst

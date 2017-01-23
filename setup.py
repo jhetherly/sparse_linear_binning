@@ -63,7 +63,7 @@ long_description = read('README.rst', 'CHANGES.txt')
 
 setup(
     name="sparse_linear_binning",
-    version='1.0.5',
+    version='1.0.0',
     url='https://github.com/jhetherly/sparse_linear_binning',
     license='MIT',
     author='Jeff Hetherly',
