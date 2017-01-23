@@ -351,34 +351,30 @@ class ComputeBinsAndVolumeFractionsDyn {
   typename GI::Corner_t         opposite_corner;
   bool                          ccol,
                                 occol;
-  size_t                        good_count;
 
   const vector<double>          &extents; // D x 2
   const vector<double>          &bin_sizes; // D
   const vector<unsigned long>   &sizes; // D
-  mutable vector<typename GI::GIndex_t> *bins;
-  mutable vector<double>                *vol_fracs;
-  mutable size_t                        *n_results;
+  mutable typename GI::Map_t            *result;
 
 public:
   ComputeBinsAndVolumeFractionsDyn (const unsigned long             &d,
                                     const vector<double>            &Extents, // D x 2
                                     const vector<double>            &Bin_sizes, // D
                                     const vector<unsigned long>     &Sizes, // D
-                                    vector<typename GI::GIndex_t>   &Bins,
-                                    vector<double>                  &Vol_fracs,
-                                    size_t                          &N_results) :
+                                    typename GI::Map_t              &Result) :
     D(d),
     max_sizes(D), low_bins(D), shifted_bins(D),
     max_lengths(D), offset_sample(D), low_reminders(D),
     n_corners(static_cast<typename GI::Corner_t>(1) << D),
     bad_corners(0), max_good_corner(0),
-    basis_vol(1.0), good_count(0),
-    extents(Extents), bin_sizes(Bin_sizes), sizes(Sizes), bins(&Bins),
-    vol_fracs(&Vol_fracs), n_results(&N_results)
+    basis_vol(1.0),
+    extents(Extents), bin_sizes(Bin_sizes), sizes(Sizes),
+    result(&Result)
   {}
 
-  ComputeBinsAndVolumeFractionsDyn& operator() (const double                   *sample) // D
+  ComputeBinsAndVolumeFractionsDyn& operator() (const double *sample, // D
+                                                const double &weight)
   {
     for (unsigned long i = 0; i < D; ++i) {
       max_sizes[i] = sizes[i] - 1;
@@ -417,24 +413,18 @@ public:
         }
       }
       if (!almost_zero(temp_vol_frac)) {
-        (*vol_fracs)[good_count] = temp_vol_frac;
         for (unsigned long i = 0; i < D; ++i) {
           shifted_bins[i] = GI::convert_corner_to_ul((corner >> i) & 1) + low_bins[i];
         }
-        (*bins)[good_count] = compute_global_bin<GI>(shifted_bins, sizes, D);
-        ++good_count;
+        (*result)[compute_global_bin<GI>(shifted_bins, sizes, D)] += weight*temp_vol_frac;
       }
       if (!almost_zero(temp_opposite_vol_frac)) {
-        (*vol_fracs)[good_count] = temp_opposite_vol_frac;
         for (unsigned long i = 0; i < D; ++i) {
           shifted_bins[i] = GI::convert_corner_to_ul((opposite_corner >> i) & 1) + low_bins[i];
         }
-        (*bins)[good_count] = compute_global_bin<GI>(shifted_bins, sizes, D);
-        ++good_count;
+        (*result)[compute_global_bin<GI>(shifted_bins, sizes, D)] += weight*temp_opposite_vol_frac;
       }
     }
-
-    (*n_results) = good_count;
 
     return *this;
   }
@@ -442,7 +432,6 @@ public:
   void reset ()
   {
     basis_vol = 1.0,
-    good_count = 0;
     bad_corners = 0;
   }
 };
@@ -768,19 +757,13 @@ void make_linear_binning (const unsigned long D, // space dimension
    */
 
   typename GI::Map_t              result;
-  vector<typename GI::GIndex_t>   bins(static_cast<size_t>(1) << D);
-  vector<double>                  vol_fracs(static_cast<size_t>(1) << D);
-  size_t                          n_bins;
 
-  ComputeBinsAndVolumeFractionsDyn<GI> cbavf(D, extents, bin_sizes, sizes, bins, vol_fracs, n_bins);
+  ComputeBinsAndVolumeFractionsDyn<GI> cbavf(D, extents, bin_sizes, sizes, result);
   for (unsigned long i = 0; i < n_samples; ++i) {
     const double *sample = &X[i*D];
     const double weight = weights[i];
 
-    cbavf(sample);
-    for (size_t ii = 0; ii < n_bins; ++ii)
-      result[bins[ii]] += weight*vol_fracs[ii];
-    cbavf.reset();
+    cbavf(sample, weight).reset();
   }
 
   delete[] result_X;
