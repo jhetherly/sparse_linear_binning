@@ -1,12 +1,15 @@
 [![Build Status](https://travis-ci.org/jhetherly/sparse_linear_binning.svg?branch=master)](https://travis-ci.org/jhetherly/sparse_linear_binning)
 
-# sparse_linear_binning: linear binning (optimized for sparsity)
+# [sparse_linear_binning: linear binning (optimized for sparsity)](https://github.com/jhetherly/sparse_linear_binning)
 
-Performs a linear binning technique described in [Wand and Jones](https://www.crcpress.com/Kernel-Smoothing/Wand-Jones/p/book/9780412552700).
+Performs a linear binning technique described in [Wand and Jones](https://www.crcpress.com/Kernel-Smoothing/Wand-Jones/p/book/9780412552700)
+on a regularly-spaced grid in an arbitrary number of dimensions.
 The
 [asymptotic behavior](http://www.tandfonline.com/doi/abs/10.1080/00949658308810650)
 of this binning technique performs better than so-called
 simple binning (i.e. as in histograms).
+Each point in ``d``-dimensional space must have an associated weight (just use
+a weight of ``1.`` for each point for equally weighted points).
 
 For example, within a 2D grid with corners A, B, C, and D and a 2D point P with
 weight w<sub>P</sub>:
@@ -41,9 +44,21 @@ maximum of "unsigned long" or "unsigned long long" on your system.
 
 ## Quickstart
 
-pip install sparse_linear_binning
+* pip install sparse_linear_binning
+
+or
+
+* git clone https://github.com/jhetherly/sparse_linear_binning
+* cd sparse_linear_binning
+* python setup.py install
 
 ## Example
+
+This constructs one million random 2D points in the unit square with random
+weights and constructs a grid of ``51`` by ``51`` (can be different along
+different dimensions) linearly binned "bin centers."
+The boundaries of the grid points are specified by ``extents`` and can be
+thought of as the under- and overflow bins.
 
 ```python
 from sparse_linear_binning import sparse_linear_binning
@@ -58,11 +73,11 @@ D=2
 sample_coords = np.random.random(size=(n_samples, D))
 sample_weights = np.random.random(size=n_samples)
 extents = np.tile([0., 1.], D).reshape((D, 2))
-# sizes must be of type "unsigned long"
-sizes = np.full(D, 51, dtype=np.dtype('uint64'))
+# n_bins must be of type "unsigned long"
+n_bins = np.full(D, 51, dtype=np.dtype('uint64'))
 
 coords, weights = sparse_linear_binning(sample_coords, sample_weights,
-                                        extents, sizes)
+                                        extents, n_bins)
 
 # check that weights on grid match original weights
 print(np.allclose(weights.sum(), sample_weights.sum()))

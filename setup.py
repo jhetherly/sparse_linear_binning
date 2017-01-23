@@ -59,18 +59,18 @@ if use_cython:
 else:
     ext_modules += [extensions]
 
-long_description = read('README.md', 'CHANGES.txt')
+long_description = read('README.rst', 'CHANGES.txt')
 
 setup(
     name="sparse_linear_binning",
-    version='1.0.0',
+    version='1.0.5',
     url='https://github.com/jhetherly/sparse_linear_binning',
     license='MIT',
     author='Jeff Hetherly',
-    author_email='fredslacks@gmail.com',
+    author_email='jeffrey.hetherly@gmail.com',
     platforms='any',
     description='Python function for performing a linear ' +
-                'binning and optimized for sparsity',
+                'binning that is optimized for sparsity',
     long_description=long_description,
     install_requires=['numpy'],
     packages=['sparse_linear_binning'],

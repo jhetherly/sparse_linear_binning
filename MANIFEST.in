@@ -1,0 +1,12 @@
+include setup.cfg
+include setup.py
+include README.rst
+include CHANGES.txt
+include sparse_linear_binning/__init__.py
+include sparse_linear_binning/sparse_linear_binning.cpp
+include sparse_linear_binning/sparse_linear_binning.pyx
+include sparse_linear_binning/sparse_linear_binning_impl.cpp
+include sparse_linear_binning/sparse_linear_binning_impl.hpp
+recursive-include sparse_linear_binning/boost *
+recursive-include sparse_linear_binning/sparsepp *
+recursive-include sparse_linear_binning/test *
