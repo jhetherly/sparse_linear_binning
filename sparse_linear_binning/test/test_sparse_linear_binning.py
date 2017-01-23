@@ -21,5 +21,5 @@ def test_sum_of_weights():
                                             extents, sizes)
     end = timer()
 
-    logging.info('\nOne million 2D points binned in {}s'.format(end - start))
+    logging.info('One million 2D points binned in {}s'.format(end - start))
     assert np.allclose(weights.sum(), sample_weights.sum())

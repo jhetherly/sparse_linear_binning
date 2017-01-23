@@ -3,10 +3,12 @@
 import os
 import io
 from distutils.core import setup, Extension
+# from setuptools import setup, Extension
 import numpy as np
 
 # NOTE: to compile, run in the current directory
 # python setup.py build_ext --inplace
+# python setup.py develop
 
 try:
     from Cython.Build import cythonize
@@ -53,12 +55,11 @@ else:
 
 if use_cython:
     ext_modules += \
-        cythonize([extensions])
+        cythonize(extensions)
 else:
     ext_modules += [extensions]
 
 long_description = read('README.md', 'CHANGES.txt')
-
 
 setup(
     name="sparse_linear_binning",
@@ -71,6 +72,8 @@ setup(
     description='Python function for performing a linear ' +
                 'binning and optimized for sparsity',
     long_description=long_description,
+    install_requires=['numpy'],
+    packages=['sparse_linear_binning'],
     cmdclass=cmdclass,
     ext_modules=ext_modules,
     include_dirs=[np.get_include(), 'sparse_linear_binning',
