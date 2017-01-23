@@ -66,7 +66,7 @@ if use_cython:
     # ]
     # cmdclass.update({'build_ext': build_ext})
 else:
-    ext_modules += extensions
+    ext_modules += [extensions]
     # [
     #     Extension("sparse_linear_binning_interface",
     #               sources=[
