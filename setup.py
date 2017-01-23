@@ -55,7 +55,8 @@ else:
 
 if use_cython:
     ext_modules += \
-        cythonize(extensions)
+        cythonize(extensions, compiler_directives={'embedsignature': True,
+                                                   'profile': True})
 else:
     ext_modules += [extensions]
 
@@ -63,7 +64,7 @@ long_description = read('README.rst', 'CHANGES.txt')
 
 setup(
     name="sparse_linear_binning",
-    version='1.0.0',
+    version='1.0.1',
     url='https://github.com/jhetherly/sparse_linear_binning',
     license='MIT',
     author='Jeff Hetherly',

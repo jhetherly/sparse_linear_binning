@@ -36,6 +36,37 @@ def sparse_linear_binning (np.ndarray[double, ndim=2, mode='c'] X,
                            np.ndarray[double, ndim=1, mode='c'] weights,
                            np.ndarray[double, ndim=2, mode='c'] extents,
                            np.ndarray[unsigned long, ndim=1, mode='c'] sizes):
+    """Perform a linear binning (optimized for sparsity)
+
+    This algorithm is able to opperate on N data point in D dimensions and
+    produces a variable number of grid points, G, with their corresponding
+    weights.
+    The input arrays need to be c-contiguous and strictly adhear to the
+    required types (double and unsigned long).
+
+    Parameters
+    ----------
+    X : 2D numpy array with shape (N, D) of type double
+        data coordinates
+    weights : 1D numpy array with shape (N) of type double
+        data weights
+    extents : 2D numpy array with shape (D, 2) of type double
+        limits of grid (all data outside this retangular region is under- or
+        overflow)
+    sizes : 1D numpy array with shape (D) of type unsigned long
+        number of bin centers (grid points) in each dimension
+
+    Returns
+    -------
+    2D numpy array with shape (G, D) of type double
+        grid points with non-zero weights
+    1D numpy array with shape (N) of type double
+        weights at the corresponding grid points
+    """
+    assert X.shape[0] == weights.size   # these must be the number of data points
+    assert X.shape[1] == extents.shape[0] == sizes.size  # these must be the dimension
+    assert extents.shape[1] == 2
+
     cdef unsigned long n_samples = X.shape[0]
     cdef unsigned long D = X.shape[1]
     cdef double* result_X = NULL

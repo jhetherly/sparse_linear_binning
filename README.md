@@ -8,11 +8,11 @@ The
 [asymptotic behavior](http://www.tandfonline.com/doi/abs/10.1080/00949658308810650)
 of this binning technique performs better than so-called
 simple binning (i.e. as in histograms).
-Each point in ``d``-dimensional space must have an associated weight (just use
-a weight of ``1.`` for each point for equally weighted points).
+Each data point in ``d``-dimensional space must have an associated weight (for
+equally weighted pointsjust use a weight of ``1.0`` for each point).
 
-For example, within a 2D grid with corners A, B, C, and D and a 2D point P with
-weight w<sub>P</sub>:
+For example, within a (segment of a) 2D grid with corners A, B, C, and D and a
+2D data point P with weight w<sub>P</sub>:
 
     A-----------------------------------B
     |        |                          |
@@ -28,19 +28,24 @@ weight w<sub>P</sub>:
 * Assign a weight to corner D of the proportion of area between P and B (times w<sub>P</sub>)
 
 Note that the under- and overflow bins need to be accounted for when specifying
-the number of bins.
+the numbers of grid points in each dimension (grid points act as bin centers).
 For instance, if you want grid points in steps of 0.1 in a range of \[0,1\]
-(i.e. (0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1)), specify the number of bins to be 11.
+(i.e. (0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1)), specify the number of grid
+points to be 11.
 Internally, the grid points are stored in a high performance, C++-based hash
 table ([sparsepp](https://github.com/greg7mdp/sparsepp)).
-This allows for finer binning because it never allocates memory for grid points
-with near-zero weight.
+This allows for finer binning in some circumstances because the hash table
+doesn't allocates memory for grid points with near-zero weight.
 To accommodate arbitrary numbers of bins along each dimension, an arbitrary
 precision numeric library ([boost multiprecision](http://www.boost.org/doc/libs/1_63_0/libs/multiprecision/doc/html/boost_multiprecision/intro.html))
 may be used internally and will negatively impact performance.
 If this degradation in performance is unacceptable, consider reducing the number
-of bins in such a way that the product of bin sizes is less than the numeric
-maximum of "unsigned long" or "unsigned long long" on your system.
+of grid points in such a way that the product of grid points in all dimensions
+is less than the numeric maximum of "unsigned long long" on your system.
+For instance, in 12 dimenisons with each dimension having 51 grid points gives
+a total of 10920525780002579727993102330411079589912583123907903488 potential
+grid points at which point the arbitrary precision library must take care of all
+arithmetic related to determining grid points.
 
 ## Quickstart
 
@@ -57,8 +62,8 @@ or
 This constructs one million random 2D points in the unit square with random
 weights and constructs a grid of ``51`` by ``51`` (can be different along
 different dimensions) linearly binned "bin centers."
-The boundaries of the grid points are specified by ``extents`` and can be
-thought of as the under- and overflow bins.
+The boundaries of the grid of bin centers are specified by ``extents`` and can
+be thought of as the under- and overflow bins.
 
 ```python
 from sparse_linear_binning import sparse_linear_binning
