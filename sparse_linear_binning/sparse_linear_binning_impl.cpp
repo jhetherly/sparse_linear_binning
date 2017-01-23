@@ -39,13 +39,13 @@ void sparse_linear_binning_impl (const unsigned long D, // space dimension
   }
 
   if (prod > std::numeric_limits<BigFiniteNum_t>::max()) {
-    if (std::numeric_limits<FiniteNum_t>::digits >= D)
+    if (static_cast<unsigned long>(std::numeric_limits<FiniteNum_t>::digits) > D)
       make_linear_binning<arbitrary_precision_global_indices_D_fin<FiniteNum_t> >(
                                   D, X, weights, n_samples,
                                   extents_to_pass, bin_sizes_to_pass,
                                   sizes_to_pass,
                                   result_X, result_weights, n_result);
-    else if (std::numeric_limits<BigFiniteNum_t>::digits >= D)
+    else if (static_cast<unsigned long>(std::numeric_limits<BigFiniteNum_t>::digits) > D)
       make_linear_binning<arbitrary_precision_global_indices_D_fin<BigFiniteNum_t> >(
                                   D, X, weights, n_samples,
                                   extents_to_pass, bin_sizes_to_pass,
@@ -59,13 +59,13 @@ void sparse_linear_binning_impl (const unsigned long D, // space dimension
                                   result_X, result_weights, n_result);
   }
   else if (prod > std::numeric_limits<FiniteNum_t>::max()) {
-    if (std::numeric_limits<FiniteNum_t>::digits >= D)
+    if (static_cast<unsigned long>(std::numeric_limits<FiniteNum_t>::digits) > D)
       make_linear_binning<finite_global_indices_D_fin<BigFiniteNum_t, FiniteNum_t> >(
                                   D, X, weights, n_samples,
                                   extents_to_pass, bin_sizes_to_pass,
                                   sizes_to_pass,
                                   result_X, result_weights, n_result);
-    else if (std::numeric_limits<BigFiniteNum_t>::digits >= D)
+    else if (static_cast<unsigned long>(std::numeric_limits<BigFiniteNum_t>::digits) > D)
       make_linear_binning<finite_global_indices_D_fin<BigFiniteNum_t, BigFiniteNum_t> >(
                                   D, X, weights, n_samples,
                                   extents_to_pass, bin_sizes_to_pass,
@@ -79,13 +79,13 @@ void sparse_linear_binning_impl (const unsigned long D, // space dimension
                                   result_X, result_weights, n_result);
   }
   else {
-    if (std::numeric_limits<FiniteNum_t>::digits >= D)
+    if (static_cast<unsigned long>(std::numeric_limits<FiniteNum_t>::digits) > D)
       make_linear_binning<finite_global_indices_D_fin<FiniteNum_t, FiniteNum_t> >(
                                   D, X, weights, n_samples,
                                   extents_to_pass, bin_sizes_to_pass,
                                   sizes_to_pass,
                                   result_X, result_weights, n_result);
-    else if (std::numeric_limits<BigFiniteNum_t>::digits >= D)
+    else if (static_cast<unsigned long>(std::numeric_limits<BigFiniteNum_t>::digits) > D)
       make_linear_binning<finite_global_indices_D_fin<FiniteNum_t, BigFiniteNum_t> >(
                                   D, X, weights, n_samples,
                                   extents_to_pass, bin_sizes_to_pass,
