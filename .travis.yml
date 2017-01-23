@@ -6,4 +6,4 @@ install:
   - "sudo pip install pytest"
 script:
   - "python setup.py build_ext --inplace"
-  - "pytest"
+  - "pytest -s"
