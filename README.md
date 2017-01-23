@@ -14,7 +14,6 @@ equally weighted points just use a weight of ``1.0`` for each point).
 For example, within a (segment of a) 2D grid with corners A, B, C, and D and a
 2D data point P with weight w<sub>P</sub>:
 
-    |                                   |
   --A-----------------------------------B--
     |        |                          |
     |                                   |
@@ -22,7 +21,6 @@ For example, within a (segment of a) 2D grid with corners A, B, C, and D and a
     |- - - - P- - - - - - - - - - - - - |
     |        |                          |
   --D-----------------------------------C--
-    |                                   |
 
 * Assign a weight to corner A of the proportion of area between P and C (times w<sub>P</sub>)
 * Assign a weight to corner B of the proportion of area between P and D (times w<sub>P</sub>)
