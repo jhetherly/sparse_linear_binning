@@ -1,1 +1,1 @@
-from sparse_linear_binning import sparse_linear_binning
+from .sparse_linear_binning import sparse_linear_binning

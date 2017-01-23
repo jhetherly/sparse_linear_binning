@@ -9,17 +9,36 @@ import numpy as np
 # python setup.py build_ext --inplace
 
 try:
-    # from Cython.Build import cythonize
-    from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
+    # from Cython.Distutils import build_ext
 except ImportError:
     use_cython = False
 else:
     use_cython = True
 
-cmdclass = { }
-ext_modules = [ ]
+cmdclass = {}
+ext_modules = []
 
 here = os.path.abspath(os.path.dirname(__file__))
+sourcefiles = ['sparse_linear_binning/sparse_linear_binning_impl.cpp',
+               'sparse_linear_binning/sparse_linear_binning.pyx']
+include_path = [np.get_include(), 'sparse_linear_binning',
+                'sparse_linear_binning/sparsepp']
+
+if use_cython:
+    extensions = \
+        Extension("sparse_linear_binning.sparse_linear_binning",
+                   sources=sourcefiles,
+                   include_dirs=include_path,
+                   language='c++')
+else:
+    sourcefiles[1] = sourcefiles[1].replace('.pyx', '.cpp')
+    extensions = \
+        Extension("sparse_linear_binning.sparse_linear_binning",
+                   sources=sourcefiles,
+                   include_dirs=include_path,
+                   language='c++')
+
 
 def read(*filenames, **kwargs):
     encoding = kwargs.get('encoding', 'utf-8')
@@ -31,22 +50,31 @@ def read(*filenames, **kwargs):
     return sep.join(buf)
 
 if use_cython:
-    ext_modules += [
-        Extension("sparse_linear_binning",
-                  sources=["sparse_linear_binning/sparse_linear_binning.pyx",
-                    "sparse_linear_binning/sparse_linear_binning_impl.cpp"],
-                  language='c++'
-                  ),
-    ]
-    cmdclass.update({'build_ext': build_ext})
+    ext_modules += \
+        cythonize([extensions])
+        # cythonize('sparse_linear_binning/sparse_linear_binning_interface.pyx',
+        #           include_path=[np.get_include(), 'sparse_linear_binning',
+        #                         'sparse_linear_binning/sparsepp']
+        #           )
+    # [
+    #     Extension("sparse_linear_binning_interface",
+    #               sources=[
+    #                "sparse_linear_binning/sparse_linear_binning_interface.pyx",
+    #                "sparse_linear_binning/sparse_linear_binning_impl.cpp"],
+    #               language='c++'
+    #               ),
+    # ]
+    # cmdclass.update({'build_ext': build_ext})
 else:
-    ext_modules += [
-        Extension("sparse_linear_binning",
-                  sources=['sparse_linear_binning/sparse_linear_binning.cpp',
-                    "sparse_linear_binning/sparse_linear_binning_impl.cpp"],
-                  language='c++'
-                  ),
-    ]
+    ext_modules += extensions
+    # [
+    #     Extension("sparse_linear_binning_interface",
+    #               sources=[
+    #                "sparse_linear_binning/sparse_linear_binning_interface.cpp",
+    #                "sparse_linear_binning/sparse_linear_binning_impl.cpp"],
+    #               language='c++'
+    #               ),
+    # ]
 
 long_description = read('README.md', 'CHANGES.txt')
 
