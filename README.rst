@@ -10,7 +10,7 @@ on a regularly-spaced grid in an arbitrary number of dimensions. The
 behavior <http://www.tandfonline.com/doi/abs/10.1080/00949658308810650>`__
 of this binning technique performs better than so-called simple binning
 (i.e. as in histograms). Each data point in ``d``-dimensional space must
-have an associated weight (for equally weighted pointsjust use a weight
+have an associated weight (for equally weighted points just use a weight
 of ``1.0`` for each point).
 
 For example, within a (segment of a) 2D grid with corners A, B, C, and D
@@ -51,11 +51,10 @@ may be used internally and will negatively impact performance. If this
 degradation in performance is unacceptable, consider reducing the number
 of grid points in such a way that the product of grid points in all
 dimensions is less than the numeric maximum of "unsigned long long" on
-your system. For instance, in 12 dimenisons with each dimension having
-51 grid points gives a total of
-10920525780002579727993102330411079589912583123907903488 potential grid
-points at which point the arbitrary precision library must take care of
-all arithmetic related to determining grid points.
+your system. For instance, in 20 dimenisons with each dimension having
+51 grid points gives a total of 14171098670753043575626125424226001
+potential grid points at which point the arbitrary precision library
+must take care of all arithmetic related to determining grid points.
 
 Quickstart
 ----------

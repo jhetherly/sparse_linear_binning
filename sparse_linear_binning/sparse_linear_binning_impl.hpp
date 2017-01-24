@@ -339,16 +339,17 @@ class ComputeBinsAndVolumeFractionsDyn {
                         low_bins,
                         shifted_bins;
   vector<double>        max_lengths,
-                        offset_sample,
                         low_reminders;
   const typename GI::Corner_t   n_corners;
   typename GI::Corner_t         bad_corners,
                                 max_good_corner;
   double                        basis_vol,
+                                offset_sample,
                                 fob,
                                 temp_vol_frac,
                                 temp_opposite_vol_frac;
-  typename GI::Corner_t         opposite_corner;
+  typename GI::Corner_t         opposite_corner,
+                                min_corner;
   bool                          ccol,
                                 occol;
 
@@ -365,42 +366,64 @@ public:
                                     typename GI::Map_t              &Result) :
     D(d),
     max_sizes(D), low_bins(D), shifted_bins(D),
-    max_lengths(D), offset_sample(D), low_reminders(D),
+    max_lengths(D), low_reminders(D),
     n_corners(static_cast<typename GI::Corner_t>(1) << D),
     bad_corners(0), max_good_corner(0),
     basis_vol(1.0),
+    min_corner(0),
     extents(Extents), bin_sizes(Bin_sizes), sizes(Sizes),
     result(&Result)
-  {}
+  {
+    for (unsigned long i = 0; i < D; ++i) {
+      max_sizes[i] = sizes[i] - 1;
+      max_lengths[i] = bin_sizes[i]*max_sizes[i];
+    }
+  }
 
   ComputeBinsAndVolumeFractionsDyn& operator() (const double *sample, // D
                                                 const double &weight)
   {
     for (unsigned long i = 0; i < D; ++i) {
-      max_sizes[i] = sizes[i] - 1;
-      max_lengths[i] = bin_sizes[i]*max_sizes[i];
-      offset_sample[i] = sample[i] - extents[2*i];
-      fob = floor(offset_sample[i]/bin_sizes[i]);
+      offset_sample = sample[i] - extents[2*i];
+      fob = floor(offset_sample/bin_sizes[i]);
       if (fob < 0)
         low_bins[i] = 0;
       else
         low_bins[i] = static_cast<unsigned long>(fob);
       if (low_bins[i] > max_sizes[i]) low_bins[i] = max_sizes[i];
-      low_reminders[i] = offset_sample[i];
-      if (low_reminders[i] < 0.0) low_reminders[i] = 0.0;
-      if (low_reminders[i] > static_cast<double>(max_lengths[i])) low_reminders[i] = static_cast<double>(max_lengths[i]);
+      if (offset_sample < 0.0)
+        low_reminders[i] = 0.0;
+      else if (offset_sample > static_cast<double>(max_lengths[i]))
+        low_reminders[i] = static_cast<double>(max_lengths[i]);
+      else
+        low_reminders[i] = offset_sample;
       low_reminders[i] -= static_cast<double>(low_bins[i])*bin_sizes[i];
-      if (max_sizes[i] != low_bins[i])
+      // NOTE: only need to check high end as the low end is already accounted for
+      if (max_sizes[i] != low_bins[i]) {
         basis_vol *= bin_sizes[i];
+        if (min_corner == 0)
+          min_corner = static_cast<typename GI::Corner_t>(1) << i;
+      }
       else
         bad_corners += static_cast<typename GI::Corner_t>(1) << i;
     }
     max_good_corner = (~bad_corners)%n_corners;
     basis_vol = 1.0/basis_vol;
 
+    // std::cout << "bad_corners: " << bad_corners << std::endl;
+    // std::cout << "max_good_corner: " << max_good_corner << std::endl;
+    // NOTE: min_corner only improves iteration if lower dimensions are "bad"
+    // for (typename GI::Corner_t corner = 0; corner < n_corners/2; corner += min_corner) {
     for (typename GI::Corner_t corner = 0; corner < n_corners/2; ++corner) {
-      if ((corner & bad_corners)%n_corners > 0) continue; // skip if this corner shares any dimension with the bad dimensions
+    // for (typename GI::Corner_t corner = 0; corner < n_corners; ++corner) {
       opposite_corner = (corner ^ max_good_corner)%n_corners;
+      // skip if this corner shares any dimension with the bad dimensions or
+      // if the opposite_corner is less than the current corner (avoids double
+      // counting)
+      if ((corner & bad_corners)%n_corners > 0 ||
+          opposite_corner < corner) continue;
+      // std::cout << "corner: " << corner << std::endl;
+      // std::cout << "opposite_corner: " << opposite_corner << std::endl;
       temp_vol_frac          = basis_vol;
       temp_opposite_vol_frac = basis_vol;
       for (unsigned long i = 0; i < D; ++i) {
@@ -409,7 +432,9 @@ public:
           occol = (opposite_corner >> i) & 1;
           // NOTE: "swapping" volume fractions to account for opposite corners
           temp_vol_frac           *= std::fabs(occol*bin_sizes[i] - low_reminders[i]);
-          temp_opposite_vol_frac  *= std::fabs(ccol*bin_sizes[i]  - low_reminders[i]);
+          // NOTE: if statement for special case of sample beyond grid in all dimensions
+          if (corner != opposite_corner)
+            temp_opposite_vol_frac  *= std::fabs(ccol*bin_sizes[i]  - low_reminders[i]);
         }
       }
       if (!almost_zero(temp_vol_frac)) {
@@ -418,7 +443,7 @@ public:
         }
         (*result)[compute_global_bin<GI>(shifted_bins, sizes, D)] += weight*temp_vol_frac;
       }
-      if (!almost_zero(temp_opposite_vol_frac)) {
+      if (corner != opposite_corner && !almost_zero(temp_opposite_vol_frac)) {
         for (unsigned long i = 0; i < D; ++i) {
           shifted_bins[i] = GI::convert_corner_to_ul((opposite_corner >> i) & 1) + low_bins[i];
         }
@@ -431,7 +456,8 @@ public:
 
   void reset ()
   {
-    basis_vol = 1.0,
+    basis_vol = 1.0;
+    min_corner = 0;
     bad_corners = 0;
   }
 };
