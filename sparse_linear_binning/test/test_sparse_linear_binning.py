@@ -22,8 +22,18 @@ def test_sum_of_weights():
                                             extents, sizes)
     end = timer()
 
-    logging.info('One million 2D points binned in {}s'.format(end - start))
+    logging.info('\n')
+    logging.info('One million 2D points binned with sparse_linear_binning in {}s'.format(end - start))
     assert np.allclose(weights.sum(), sample_weights.sum())
+
+    x = np.ascontiguousarray(sample_coords[:,0])
+    y = np.ascontiguousarray(sample_coords[:,1])
+    start = timer()
+    np.histogram2d(x, y, 
+                   weights=sample_weights, 
+                   bins=sizes, range=extents)
+    end = timer()
+    logging.info('For comparison, np.histogram2d finished in {}s'.format(end - start))
 
     # sample_coords, sample_weights, extents, sizes = generate_data(2)
     # D = 2
