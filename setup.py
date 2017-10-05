@@ -60,7 +60,7 @@ if use_cython:
 else:
     ext_modules += [extensions]
 
-long_description = read('README.rst', 'CHANGES.txt')
+long_description = read('README.rst', 'CHANGELOG.md')
 
 setup(
     name="sparse_linear_binning",
