@@ -64,7 +64,7 @@ long_description = read('README.rst', 'CHANGES.txt')
 
 setup(
     name="sparse_linear_binning",
-    version='1.0.2',
+    version='1.1.0',
     url='https://github.com/jhetherly/sparse_linear_binning',
     license='MIT',
     author='Jeff Hetherly',
@@ -77,6 +77,5 @@ setup(
     packages=['sparse_linear_binning'],
     cmdclass=cmdclass,
     ext_modules=ext_modules,
-    include_dirs=[np.get_include(), 'sparse_linear_binning',
-                  'sparse_linear_binning/sparsepp']
+    include_dirs=[np.get_include(), 'sparse_linear_binning']
 )

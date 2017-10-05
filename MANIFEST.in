@@ -1,18 +1,19 @@
 # NOTE: before upload
-# update version number here and GitHub
 # pandoc --from=markdown --to=rst --output=README.rst README.md
-# python setup.py register -r pypi
-# python setup.py sdist upload -r pypi
+# update version number here and GitHub
+# ensure that ~/.pypirc is configured correctly
+# python setup.py register
+# python setup.py sdist upload
 
 include setup.cfg
 include setup.py
 include README.rst
-include CHANGES.txt
+include CHANGELOG.md
 include sparse_linear_binning/__init__.py
 include sparse_linear_binning/sparse_linear_binning.cpp
 include sparse_linear_binning/sparse_linear_binning.pyx
 include sparse_linear_binning/sparse_linear_binning_impl.cpp
 include sparse_linear_binning/sparse_linear_binning_impl.hpp
-recursive-include sparse_linear_binning/boost *
 recursive-include sparse_linear_binning/sparsepp *
+recursive-include sparse_linear_binning/boost *
 recursive-include sparse_linear_binning/test *
