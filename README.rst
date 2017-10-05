@@ -40,8 +40,9 @@ specifying the numbers of grid points in each dimension (grid points act
 as bin centers). For instance, if you want grid points in steps of 0.1
 in a range of [0,1] (i.e. (0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1)),
 specify the number of grid points to be 11. Internally, the grid points
-are stored in a C++11-based hash table (``unordered_map``). This allows
-for finer binning in some circumstances because the hash table doesn't
+are stored in a high performance, C++-based hash table
+(`sparsepp <https://github.com/greg7mdp/sparsepp>`__). This allows for
+finer binning in some circumstances because the hash table doesn't
 allocates memory for grid points with near-zero weight. To accommodate
 arbitrary numbers of bins along each dimension, an arbitrary precision
 numeric library (`boost
